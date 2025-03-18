@@ -19,16 +19,21 @@ class XThreadPool{
 		// 线程数量
 		int thread_num_=0;
 		std::mutex mux_;
+		
 		// 用于存储线程池中的线程
-		std::vector<std::thread* > threads_;
+		// std::vector<std::thread* > threads_;
+		std::vector<std::shared_ptr<std::thread>> threads_;
+
 		// 线程池线程的入口函数
 		void Run();
 
-		std::list<XTask* > tasks_;
+		// std::list<XTask* > tasks_;
+		std::list<std::shared_ptr<XTask> > tasks_;
 
 		std::condition_variable cv_;
 
 		bool is_exit_=false;
+
 		//正在运行的线程数量，线程安全的 
 		std::atomic<int> task_run_count_={0};
 
@@ -40,9 +45,12 @@ class XThreadPool{
 		void Start();
 
 		//添加任务 
-		void AddTask(XTask* task);
+		// void AddTask(XTask* task);
+		void AddTask(std::shared_ptr<XTask> task);
+
 		// 获取任务
-		XTask* GetTask();
+		// XTask* GetTask();
+		std::shared_ptr<XTask> GetTask();
 
 		// 线程池的退出
 		void Stop();

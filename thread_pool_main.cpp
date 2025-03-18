@@ -29,14 +29,24 @@ int main(){
 	pool.Init(16);
 	pool.Start();
 
-	MyTask task1;
-	task1.name="Test name 001";
-	pool.AddTask(&task1);
+	// MyTask task1;
+	// task1.name="Test name 001";
+	// pool.AddTask(&task1);
 	
-	MyTask task2;
-	task2.name="Test name 002";
-	pool.AddTask(&task2);
-	this_thread::sleep_for(1s);
+	// MyTask task2;
+	// task2.name="Test name 002";
+	// pool.AddTask(&task2);
+	// this_thread::sleep_for(1s);
+	
+	//智能指针版本 
+	shared_ptr<MyTask> task3 = make_shared<MyTask>();
+	task3->name="test shared 003";
+	pool.AddTask(task3);
+
+	shared_ptr<MyTask> task4 = make_shared<MyTask>();
+	task4->name="test shared 004";
+	pool.AddTask(task4);
+	this_thread::sleep_for(100ms);
 	cout<<"task running count :"<<pool.task_run_count()<<endl;
 
 	this_thread::sleep_for(3s);
