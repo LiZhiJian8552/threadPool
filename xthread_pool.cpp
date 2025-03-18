@@ -105,7 +105,8 @@ void XThreadPool::Run(){
 		task_run_count_++;
 		try{
 			// 执行任务
-			task->Run();	
+			auto result=task->Run();
+			task->SetValue(result);
 		}catch(...){
 
 		}

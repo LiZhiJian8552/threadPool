@@ -5,12 +5,23 @@
 #include<condition_variable>
 #include<functional>
 #include<atomic>
-
+#include<future>
 class XTask{
-public:
-	virtual int Run()=0;
-	// 函数指针
-	std::function<bool()> is_exit=nullptr;
+	public:
+		virtual int Run()=0;
+		// 函数指针
+		std::function<bool()> is_exit=nullptr;
+
+		auto GetValue(){
+			return p_.get_future().get();
+		}
+
+		void SetValue(int v){
+			p_.set_value(v);
+		}
+	private:
+		// 存储运行结果
+		std::promise<int> p_;
 };
 
 

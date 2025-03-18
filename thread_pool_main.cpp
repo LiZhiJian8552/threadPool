@@ -46,8 +46,9 @@ int main(){
 	shared_ptr<MyTask> task4 = make_shared<MyTask>();
 	task4->name="test shared 004";
 	pool.AddTask(task4);
-	this_thread::sleep_for(100ms);
-	cout<<"task running count :"<<pool.task_run_count()<<endl;
+	int result=task4->GetValue();
+	cout<<"task4.GetValue() return = "<<result<<endl;
+
 
 	this_thread::sleep_for(3s);
 	pool.Stop();
