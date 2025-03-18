@@ -26,6 +26,8 @@ class XThreadPool{
 
 		std::condition_variable cv_;
 
+		bool is_exit_=false;
+
 	public:
 		// 初始化线程数量
 		void Init(int num);
@@ -37,4 +39,10 @@ class XThreadPool{
 		void AddTask(XTask* task);
 		// 获取任务
 		XTask* GetTask();
+
+		// 线程池的退出
+		void Stop();
+
+		// 线程池是否退出
+		bool is_exit(){ return is_exit_;}
 };

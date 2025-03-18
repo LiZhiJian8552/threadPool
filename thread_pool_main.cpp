@@ -10,6 +10,10 @@ class MyTask:public XTask{
 			cout<<"===================="<<endl;
 			cout<<this_thread::get_id()<<" MyTask "<<name<<endl;
 			cout<<"===================="<<endl;
+			for(int i=0;i<10;i++){
+				cout<<"."<<flush;
+				this_thread::sleep_for(500ms);
+			}
 			return 0;
 		}
 	string name;
@@ -24,8 +28,10 @@ int main(){
 
 	MyTask task1;
 	task1.name="Test name 001";
-
 	pool.AddTask(&task1);
-	getchar();
+
+
+	this_thread::sleep_for(3s);
+	pool.Stop();
 	return 0;
 }

@@ -30,9 +30,38 @@ void XThreadPool::Start(){
 	}
 }
 
+void XThreadPool::Stop(){
+	// 设置标记位为退出
+	{
+		unique_lock<mutex> lock(mux_);
+		is_exit_=true;
+	}
+
+	// 通知所有线程退出
+	cv_.notify_all();
+
+	// 等待线程完成任务
+	for(auto &th:threads_){
+		th->join();
+	}
+
+	// 清空所有线程
+	{	
+		unique_lock<mutex> lock(mux_);
+		// 因为存储的是指针，所有需要手动释放
+		for(auto* th:threads_){
+			delete th;
+		}
+		// 再清空vector中的指针
+        threads_.clear();  // 🚨 关键修复：确保vector不再持有悬垂指针
+	}
+	
+}
+
+
 void XThreadPool::Run(){
 	cout<<"begin XThreadPool "<<this_thread::get_id()<<endl;
-	while(true){
+	while(!is_exit()){
 		// 获取任务
 		auto task = GetTask();
 		// 判断任务是否为空
@@ -54,8 +83,10 @@ void XThreadPool::Run(){
 void XThreadPool::AddTask(XTask* task){
 	unique_lock<mutex> lock(mux_);
 	tasks_.push_back(task);
-	// 不添加唤醒吗？
-	// cv_.notify_one();
+	
+	// 添加唤醒
+	lock.unlock();
+	cv_.notify_one();
 }
 
 XTask* XThreadPool::GetTask(){
@@ -64,6 +95,10 @@ XTask* XThreadPool::GetTask(){
 	if(tasks_.empty()){
 		// 阻塞
 		cv_.wait(lock);
+	}
+	// 如果任务池中有任务，但是此时线程池退出，则返回nullptr
+	if(!is_exit()){
+		return nullptr;
 	}
 	if(tasks_.empty()){
 		return nullptr;
