@@ -41,20 +41,24 @@ void XThreadPool::Stop(){
 	cv_.notify_all();
 
 	// 等待线程完成任务
-	for(auto &th:threads_){
-		th->join();
+	for(auto th:threads_){
+		if(th->joinable()){
+			th->join();	
+		}
+		delete th;
 	}
 
-	// 清空所有线程
-	{	
-		unique_lock<mutex> lock(mux_);
-		// 因为存储的是指针，所有需要手动释放
-		for(auto* th:threads_){
-			delete th;
-		}
-		// 再清空vector中的指针
-        threads_.clear();  // 🚨 关键修复：确保vector不再持有悬垂指针
-	}
+	threads_.clear();
+	// // 清空所有线程
+	// {	
+	// 	unique_lock<mutex> lock(mux_);
+	// 	// 因为存储的是指针，所有需要手动释放
+	// 	for(auto* th:threads_){
+			
+	// 	}
+	// 	// 再清空vector中的指针
+    //     threads_.clear();  // 🚨 关键修复：确保vector不再持有悬垂指针
+	// }
 	
 }
 
@@ -99,8 +103,9 @@ XTask* XThreadPool::GetTask(){
 		// 阻塞
 		cv_.wait(lock);
 	}
+
 	// 如果任务池中有任务，但是此时线程池退出，则返回nullptr
-	if(!is_exit()){
+	if(is_exit()){
 		return nullptr;
 	}
 	if(tasks_.empty()){
