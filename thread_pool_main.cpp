@@ -11,6 +11,9 @@ class MyTask:public XTask{
 			cout<<this_thread::get_id()<<" MyTask "<<name<<endl;
 			cout<<"===================="<<endl;
 			for(int i=0;i<10;i++){
+				if(is_exit()){
+					break;
+				}
 				cout<<"."<<flush;
 				this_thread::sleep_for(500ms);
 			}

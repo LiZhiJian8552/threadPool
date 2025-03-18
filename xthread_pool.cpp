@@ -83,7 +83,10 @@ void XThreadPool::Run(){
 void XThreadPool::AddTask(XTask* task){
 	unique_lock<mutex> lock(mux_);
 	tasks_.push_back(task);
-	
+	task->is_exit=[this](){
+		return is_exit();
+	};
+
 	// 添加唤醒
 	lock.unlock();
 	cv_.notify_one();

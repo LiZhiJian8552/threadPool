@@ -3,12 +3,14 @@
 #include<vector>
 #include<list>
 #include<condition_variable>
-
+#include<functional>
 
 
 class XTask{
 public:
 	virtual int Run()=0;
+	// 函数指针
+	std::function<bool()> is_exit=nullptr;
 };
 
 
