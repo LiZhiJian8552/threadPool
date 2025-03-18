@@ -4,7 +4,7 @@
 #include<list>
 #include<condition_variable>
 #include<functional>
-
+#include<atomic>
 
 class XTask{
 public:
@@ -29,6 +29,8 @@ class XThreadPool{
 		std::condition_variable cv_;
 
 		bool is_exit_=false;
+		//正在运行的线程数量，线程安全的 
+		std::atomic<int> task_run_count_={0};
 
 	public:
 		// 初始化线程数量
@@ -47,4 +49,7 @@ class XThreadPool{
 
 		// 线程池是否退出
 		bool is_exit(){ return is_exit_;}
+
+		// 
+		int task_run_count(){return task_run_count_;}
 };

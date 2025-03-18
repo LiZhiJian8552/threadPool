@@ -32,9 +32,15 @@ int main(){
 	MyTask task1;
 	task1.name="Test name 001";
 	pool.AddTask(&task1);
-
+	
+	MyTask task2;
+	task2.name="Test name 002";
+	pool.AddTask(&task2);
+	this_thread::sleep_for(1s);
+	cout<<"task running count :"<<pool.task_run_count()<<endl;
 
 	this_thread::sleep_for(3s);
 	pool.Stop();
+	cout<<"task running count :"<<pool.task_run_count()<<endl;
 	return 0;
 }

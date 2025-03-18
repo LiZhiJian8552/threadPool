@@ -72,13 +72,14 @@ void XThreadPool::Run(){
 		if(task==nullptr){
 			continue;
 		}
-
+		task_run_count_++;
 		try{
 			// 执行任务
 			task->Run();	
 		}catch(...){
 
 		}
+		task_run_count_--;
 	}
 	cout<<"end XThreadPool "<<this_thread::get_id()<<endl;
 }
