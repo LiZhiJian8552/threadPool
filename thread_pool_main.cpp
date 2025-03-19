@@ -19,14 +19,42 @@ int main(){
 	pool.Init(16);
 	pool.Start();
 
-	auto vtask1 =make_shared<XVideoTask>();
-	vtask1->in_path="test.mp4";
-	vtask1->out_path="640.mp4";
-	vtask1->width=640;
-	vtask1->height=480;
+	// auto vtask1 =make_shared<XVideoTask>();
+	// vtask1->in_path="test.mp4";
+	// vtask1->out_path="640.mp4";
+	// vtask1->width=640;
+	// vtask1->height=480;
 
-	pool.AddTask(vtask1);
-	vtask1->GetValue();
+	// pool.AddTask(vtask1);
+	// vtask1->GetValue();
+
+	this_thread::sleep_for(200ms);
+	for(;;){
+		this_thread::sleep_for(200ms);
+		cout<<"==================================="<<endl;
+		auto task =make_shared<XVideoTask>();
+		cout<<"请输入命令(v e l): ";
+		string cmd;
+		cin>>cmd;
+		if(cmd=="e"){
+			break;
+		}else if(cmd=="l"){
+			cout<<"task run count = "<<pool.task_run_count()<<endl;
+			continue;
+		}else{
+			cout<<"请输入视频源： ";
+			cin>>task->in_path;
+			// cout<<task->in_path;
+			cout<<"目标： ";
+			cin>>task->out_path;
+			cout<<"输入宽：";
+			cin>>task->width;
+			cout<<"输入高：";
+			cin>>task->height;
+			pool.AddTask(task);
+		}
+	}
+	pool.Stop();
 
 	return 0;
 }
