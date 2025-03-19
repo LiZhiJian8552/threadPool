@@ -1,26 +1,16 @@
 #include "xthread_pool.h"
 #include<iostream>
 #include<string>
+#include"xvideo_task.h"
 using namespace std;
 
 
-class MyTask:public XTask{
-	public:
-		int Run() override{
-			cout<<"===================="<<endl;
-			cout<<this_thread::get_id()<<" MyTask "<<name<<endl;
-			cout<<"===================="<<endl;
-			for(int i=0;i<10;i++){
-				if(is_exit()){
-					break;
-				}
-				cout<<"."<<flush;
-				this_thread::sleep_for(500ms);
-			}
-			return 0;
-		}
-	string name;
-};
+// 命令行视频转化工具
+//ffmpeg
+//输入视频源，输出视频尺寸
+//在线程池中执行转码任务
+//转码任务调用ffmepg
+//ffmpeg -y -i test.mp4 -s 400x300 400.mp4 >log.txt 2>&1
 
 
 int main(){
@@ -29,29 +19,14 @@ int main(){
 	pool.Init(16);
 	pool.Start();
 
-	// MyTask task1;
-	// task1.name="Test name 001";
-	// pool.AddTask(&task1);
-	
-	// MyTask task2;
-	// task2.name="Test name 002";
-	// pool.AddTask(&task2);
-	// this_thread::sleep_for(1s);
-	
-	//智能指针版本 
-	shared_ptr<MyTask> task3 = make_shared<MyTask>();
-	task3->name="test shared 003";
-	pool.AddTask(task3);
+	auto vtask1 =make_shared<XVideoTask>();
+	vtask1->in_path="test.mp4";
+	vtask1->out_path="640.mp4";
+	vtask1->width=640;
+	vtask1->height=480;
 
-	shared_ptr<MyTask> task4 = make_shared<MyTask>();
-	task4->name="test shared 004";
-	pool.AddTask(task4);
-	int result=task4->GetValue();
-	cout<<"task4.GetValue() return = "<<result<<endl;
+	pool.AddTask(vtask1);
+	vtask1->GetValue();
 
-
-	this_thread::sleep_for(3s);
-	pool.Stop();
-	cout<<"task running count :"<<pool.task_run_count()<<endl;
 	return 0;
 }

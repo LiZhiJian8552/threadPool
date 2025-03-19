@@ -1,3 +1,6 @@
+#ifndef XTHREAD_POOL_H
+#define XTHREAD_POOL_H
+
 #include<thread>
 #include<mutex>
 #include<vector>
@@ -71,4 +74,6 @@ class XThreadPool{
 
 		// 
 		int task_run_count(){return task_run_count_;}
+		~XThreadPool(){ Stop();}
 };
+#endif // XTHREAD_POOL_H
